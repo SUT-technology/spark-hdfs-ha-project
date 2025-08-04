@@ -1,0 +1,70 @@
+
+services:
+  zookeeper:
+    image: 'bitnami/zookeeper:3.8'
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  journalnode:
+    image: apache/hadoop:3.4.1
+    command: ["hdfs", "journalnode"]
+    platform: linux/amd64
+    hostname: journalnode
+
+  namenode1:
+    image: apache/hadoop:3.4.1
+    hostname: namenode1
+    platform: linux/amd64
+    depends_on:
+      - journalnode
+      - zookeeper
+    ports:
+      - "9870:9870" # Web UI for Active NameNode
+    volumes:
+      - ./hadoop-config:/etc/hadoop/
+    environment:
+      - HADOOP_CONF_DIR=/etc/hadoop
+    command: tail -f /dev/null
+
+  namenode2:
+    image: apache/hadoop:3.4.1
+    hostname: namenode2
+    platform: linux/amd64
+    depends_on:
+      - journalnode
+      - zookeeper
+    ports:
+      - "9871:9870" # Web UI for Standby NameNode
+    volumes:
+      - ./hadoop-config:/etc/hadoop/
+    environment:
+      - HADOOP_CONF_DIR=/etc/hadoop
+    command: tail -f /dev/null
+
+  datanode1:
+    image: apache/hadoop:3.4.1
+    platform: linux/amd64
+    depends_on:
+      - namenode1
+      - namenode2
+    command: tail -f /dev/null
+
+  datanode2:
+    image: apache/hadoop:3.4.1
+    platform: linux/amd64
+    depends_on:
+      - namenode1
+      - namenode2
+    command: tail -f /dev/null
+
+  spark-app:
+    image: bitnami/spark:latest
+    depends_on:
+      - namenode1
+      - namenode2
+    volumes:
+      - ./hadoop-config:/opt/bitnami/spark/conf/ # Make HDFS configs available to Spark
+      - ./:/app # Mount project directory to run Spark job
+    command: tail -f /dev/null # Keep container running
