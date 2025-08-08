@@ -1,0 +1,4 @@
+com\example\config\HdfsPaths.class
+com\example\repository\TaxiDataRepository.class
+com\example\application\Main.class
+com\example\service\TaxiAnalysisService.class

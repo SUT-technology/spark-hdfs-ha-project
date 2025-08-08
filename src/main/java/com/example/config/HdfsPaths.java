@@ -8,7 +8,7 @@ public class HdfsPaths {
     }
 
     public String getTripDataPath() {
-        return baseUri + "/data/taxi/yellow_tripdata_2022-01.parquet";
+        return baseUri + "/data/taxi/yellow_tripdata_2025-01.parquet";
     }
 
     public String getZoneLookupPath() {

@@ -13,10 +13,12 @@ services:
       - HDFS_NAMENODE_USER=root
       - HDFS_DATANODE_USER=root
       - HADOOP_CONF_DIR=/etc/hadoop
+      # - JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64
     volumes:
       - ./hadoop-config:/etc/hadoop/
       - ./hadoop-data:/hadoop/dfs
     command: tail -f /dev/null
+
 
   spark:
     image: focker.ir/bitnami/spark:latest

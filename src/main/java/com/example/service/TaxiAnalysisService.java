@@ -7,11 +7,17 @@ import static org.apache.spark.sql.functions.*;
 public class TaxiAnalysisService {
 
     public Dataset<Row> analyzeLongTrips(Dataset<Row> tripData) {
-        return tripData
-                .filter(col("passenger_count").gt(2).and(col("trip_distance").gt(5)))
-                .withColumn("duration_minutes",
-                        col("tpep_dropoff_datetime").cast("long").minus(col("tpep_pickup_datetime").cast("long")).divide(60)).orderBy(col("duration_minutes").desc());
-    }
+    return tripData
+            .filter(col("passenger_count").gt(2).and(col("trip_distance").gt(5)))
+            .withColumn(
+                "duration_minutes",
+                unix_timestamp(col("tpep_dropoff_datetime"))
+                    .minus(unix_timestamp(col("tpep_pickup_datetime")))
+                    .divide(60)
+            )
+            .orderBy(col("duration_minutes").desc());
+}
+
 
     public Dataset<Row> analyzeAvgFareByZone(Dataset<Row> tripData, Dataset<Row> zoneLookup) {
         return tripData
