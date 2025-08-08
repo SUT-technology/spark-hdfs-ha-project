@@ -49,3 +49,4 @@
 
 #Github repo:
     https://github.com/SUT-technology/spark-hdfs-ha-project.git
+#Input and output HDFS: src\main\java\com\example\config\HdfsPaths.java
