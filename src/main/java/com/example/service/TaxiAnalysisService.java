@@ -10,8 +10,7 @@ public class TaxiAnalysisService {
         return tripData
                 .filter(col("passenger_count").gt(2).and(col("trip_distance").gt(5)))
                 .withColumn("duration_minutes",
-                        (col("tpep_dropoff_datetime").cast("long") - col("tpep_pickup_datetime").cast("long")) / 60)
-                .orderBy(col("duration_minutes").desc());
+                        col("tpep_dropoff_datetime").cast("long").minus(col("tpep_pickup_datetime").cast("long")).divide(60)).orderBy(col("duration_minutes").desc());
     }
 
     public Dataset<Row> analyzeAvgFareByZone(Dataset<Row> tripData, Dataset<Row> zoneLookup) {
@@ -22,5 +21,24 @@ public class TaxiAnalysisService {
                 .orderBy(col("average_fare").desc());
     }
     
-    // ... سایر متدهای تحلیلی (analyzeRevenueByBorough, analyzeMaxTipPerDay)
+
+    public Dataset<Row> analyzeRevenueByBorough(Dataset<Row> tripData, Dataset<Row> zoneLookup) {
+    return tripData
+            .join(zoneLookup, tripData.col("DOLocationID").equalTo(zoneLookup.col("LocationID")))
+            .groupBy("Borough")
+            .agg(
+                round(sum("total_amount"), 2).as("total_revenue"),
+                count("*").as("trip_count")
+            )
+            .orderBy(col("total_revenue").desc());
+}
+
+    public Dataset<Row> analyzeMaxTipPerDay(Dataset<Row> tripData) {
+        return tripData
+                .withColumn("pickup_date", to_date(col("tpep_pickup_datetime")))
+                .groupBy("pickup_date")
+                .agg(max("tip_amount").as("max_tip"))
+                .orderBy(col("pickup_date"));
+    }
+
 }

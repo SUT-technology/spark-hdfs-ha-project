@@ -4,6 +4,9 @@ package com.example.application;
 import com.example.config.HdfsPaths;
 import com.example.repository.TaxiDataRepository;
 import com.example.service.TaxiAnalysisService;
+
+import java.util.ArrayList;
+
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
