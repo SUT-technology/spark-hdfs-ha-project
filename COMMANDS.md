@@ -16,7 +16,7 @@
     docker compose exec --user root hadoop /opt/hadoop/bin/hdfs dfs -mkdir -p /data/taxi
     docker compose cp data/taxi/yellow_tripdata_2022-01.parquet hadoop:/tmp/
     docker compose cp data/taxi/taxi_zone_lookup.csv    hadoop:/tmp/
-    docker compose exec --user root hadoop /opt/hadoop/bin/hdfs dfs -put /tmp/yellow_tripdata_2022-01.parquet /data/taxi/
+    docker compose exec --user root hadoop /opt/hadoop/bin/hdfs dfs -put /tmp/yellow_tripdata_2025-01.parquet /data/taxi/
     docker compose exec --user root hadoop /opt/hadoop/bin/hdfs dfs -put /tmp/taxi_zone_lookup.csv    /data/taxi/
     #CHECK IF FILES ARE COPPIED
     docker compose exec hadoop /opt/hadoop/bin/hdfs dfs -ls /data/taxi
@@ -45,3 +45,7 @@
     exit
     docker cp hadoop:/tmp/output D:\GOprojects\spark-hdfs-ha-project\output
 
+
+
+#Github repo:
+    https://github.com/SUT-technology/spark-hdfs-ha-project.git
