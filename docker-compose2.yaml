@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  hadoop:
+    image: focker.ir/apache/hadoop:3.4.1
+    container_name: hadoop
+    hostname: hadoop
+    platform: linux/amd64
+    ports:
+      - "9870:9870"   # HDFS Web UI
+      - "9864:9864"   # DataNode UI
+    environment:
+      - HDFS_NAMENODE_USER=root
+      - HDFS_DATANODE_USER=root
+      - HADOOP_CONF_DIR=/etc/hadoop
+      # - JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64
+    volumes:
+      - ./hadoop-config:/etc/hadoop/
+      - ./hadoop-data:/hadoop/dfs
+    command: tail -f /dev/null
+
+
+  spark:
+    image: focker.ir/bitnami/spark:latest
+    container_name: spark
+    hostname: spark
+    depends_on:
+      - hadoop
+    volumes:
+      - ./hadoop-config:/opt/bitnami/spark/conf/
+      - ./app:/app
+    command: tail -f /dev/null
